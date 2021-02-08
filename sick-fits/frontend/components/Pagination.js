@@ -10,7 +10,7 @@ import {perPage} from "../config";
 // view more items
 
 
-const PAGINATION_QUERY = gql`
+export const PAGINATION_QUERY = gql`
   query PAGINATION_QUERY {
     _allProductsMeta {
       count
