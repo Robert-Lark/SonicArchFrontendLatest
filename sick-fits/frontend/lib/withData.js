@@ -4,10 +4,12 @@ import { getDataFromTree } from '@apollo/react-ssr';
 import { createUploadLink } from 'apollo-upload-client';
 import withApollo from 'next-with-apollo';
 import { endpoint, prodEndpoint } from '../config';
+import paginationField from './paginationFields';
 
 function createClient({ headers, initialState }) {
   return new ApolloClient({
     link: ApolloLink.from([
+      //ERROR HANDLING - MOSTLY SYNTAX RELATED (PASSWORD WRONG ETC)
       onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors)
           graphQLErrors.forEach(({ message, locations, path }) =>
@@ -15,6 +17,7 @@ function createClient({ headers, initialState }) {
               `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
             )
           );
+          //CORS ISSUES OR NETWORK DOWN OR BACKEND IS NOT UP
         if (networkError)
           console.log(
             `[Network error]: ${networkError}. Backend is unreachable. Is it running?`
@@ -30,12 +33,13 @@ function createClient({ headers, initialState }) {
         headers,
       }),
     ]),
+    //STORING THE CACHE IN MEMORY
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
           fields: {
             // TODO: We will add this together!
-            // allProducts: paginationField(),
+            allProducts: paginationField(),
           },
         },
       },
